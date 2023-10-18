@@ -1,4 +1,4 @@
-# The-Social-Network (Not the movie)
+# The Social Network (Not the movie)
 NoSQL
 
 
