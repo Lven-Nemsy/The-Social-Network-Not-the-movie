@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const { User } = require('../models/User');
 
 module.exports = {
     async createUser(req, res) {
@@ -84,6 +84,43 @@ module.exports = {
                 return res.status(404).json({ message: 'User not found' });
             }
             res.status(200).json({ message: 'User deleted successfully' });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Server Error' });
+        }
+    },
+
+    async addFriend(req, res) {
+        try {
+            const user = await User.findByIdAndUpdate(req.params.id, { $push: { friends: req.params.friendId } }, { new: true });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            res.status(200).json({ message: 'Friend added successfully' });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Server Error' });
+        }
+    },
+
+    async deleteFriend(req, res) { 
+        try {
+            const user = await User.findByIdAndUpdate(req.params.id, { $pull: { friends: req.params.friendId } }, { new: true });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }   
+            res.json(user);
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Server Error' });
+        }
+    },
+
+    async getAllUsers(req, res) {
+        try {
+            const user = await User.find({});
+            res.status(200).json(User);
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Server Error' });
