@@ -17,13 +17,6 @@ module.exports = {
                 return res.status(400).json({ message: 'Invalid email format' });
             }
 
-            // Validate password
-            if (!password) {
-                return res.status(400).json({ message: 'Password is required' });
-            } else if (password.length < 6) {
-                return res.status(400).json({ message: 'Password must be at least 6 characters long' });
-            }
-
             const user = new User({ username, email, password });
             await user.save();
             res.status(201).json(user);
@@ -57,13 +50,6 @@ module.exports = {
                 return res.status(400).json({ message: 'Email is required' });
             } else if (!/\S+@\S+\.\S+/.test(email)) {
                 return res.status(400).json({ message: 'Invalid email format' });
-            }
-
-            // Validate password
-            if (!password) {
-                return res.status(400).json({ message: 'Password is required' });
-            } else if (password.length < 6) {
-                return res.status(400).json({ message: 'Password must be at least 6 characters long' });
             }
 
             const user = await User.findByIdAndUpdate(req.params.id, { username, email, password }, { new: true });
