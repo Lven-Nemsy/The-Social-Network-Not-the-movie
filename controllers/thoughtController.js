@@ -40,6 +40,7 @@ module.exports = {
 	// create thought
 	async createThought(req, res) {
 		try {
+			const dbThoughtData = await Thought.create(req.body);
 			const dbUserData = await User.findOneAndUpdate(
 				{ _id: req.body.userId },
 				{ $push: { thoughts: dbThoughtData._id } },
@@ -55,7 +56,7 @@ module.exports = {
 			// 	return res.status(400).json({ message: "Invalid user ID." });
 			// }
 
-			const dbThoughtData = await Thought.create(req.body);
+
 			
 			res.json({ message: "Thought created!" });
 		} catch (err) {
