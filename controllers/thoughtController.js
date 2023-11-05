@@ -5,8 +5,7 @@ module.exports = {
 	// get all thoughts
 	async getAllThoughts(req, res) {
 		try {
-			const dbThoughtData = await Thought.find({})
-				.sort({ _id: -1 });
+			const dbThoughtData = await Thought.find({}).sort({ _id: -1 });
 			res.json(dbThoughtData);
 		} catch (err) {
 			console.log(err);
@@ -41,7 +40,6 @@ module.exports = {
 	// create thought
 	async createThought(req, res) {
 		try {
-			const dbThoughtData = await Thought.create(req.body);
 			const dbUserData = await User.findOneAndUpdate(
 				{ _id: req.body.userId },
 				{ $push: { thoughts: dbThoughtData._id } },
@@ -49,8 +47,16 @@ module.exports = {
 			);
 
 			if (!dbUserData) {
-				return res.status(404).json({ message: "No user found with this id!" });
+				return res
+					.status(404)
+					.json({ message: "No user found with this id!" });
 			}
+			// if (!dbUserData.isValid(req.body.userId)) {
+			// 	return res.status(400).json({ message: "Invalid user ID." });
+			// }
+
+			const dbThoughtData = await Thought.create(req.body);
+			
 			res.json({ message: "Thought created!" });
 		} catch (err) {
 			console.log(err);
@@ -128,7 +134,7 @@ module.exports = {
 		try {
 			const dbThoughtData = await Thought.findOneAndUpdate(
 				{ _id: req.params.thoughtId },
-				{ $pull: { reactionId: req.params.reactionId } },
+				{ $pull: { reactions: { reactionId: req.params.reactionId } } },
 				{ new: true }
 			);
 
@@ -136,8 +142,9 @@ module.exports = {
 				return res
 					.status(404)
 					.json({ message: "No thought found with this id!" });
+			} else {
+				res.json({ message: "Reaction deleted!" });
 			}
-			res.json({ message: "Reaction deleted!" });
 		} catch (err) {
 			console.log(err);
 			res.status(400).json(err);
